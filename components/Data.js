@@ -12,15 +12,16 @@ export default function Data() {
         z: 0,
     });
     const insertData = () => {
-        console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        fetch('http://192.168.0.108:5000/send', {
+        // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+        fetch('https://human-activity-recognitionml.herokuapp.com/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer })
         })
-            .then(resp => resp.json())
+            .then(resp => resp.text())
+            .then((json) => console.log(json))
             .catch(error => console.log(error))
     }
     const [subscription, setSubscription] = useState(null);

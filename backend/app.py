@@ -1,5 +1,5 @@
 from flask import Flask,jsonify,request
-
+import socket
 app=Flask(__name__)
 
 @app.route('/',methods=['GET'])
@@ -14,4 +14,4 @@ def get_data_from_app():
     print(gyroscope)
 
 if __name__=="__main__":
-    app.run(host='192.168.0.108',port=5000,debug=True)
+    app.run(host=socket.gethostbyname(socket.gethostname()),port=5000,debug=True)
