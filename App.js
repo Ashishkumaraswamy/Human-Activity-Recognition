@@ -6,8 +6,8 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      {/* <Home /> */}
-      <Data></Data>
+      <Home />
+      {/* <Data></Data> */}
     </View>
   );
 }

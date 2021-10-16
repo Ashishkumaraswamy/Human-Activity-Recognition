@@ -20,7 +20,7 @@ export default function Data() {
             },
             body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer })
         })
-            .then(resp => resp.text())
+            .then(resp => resp.json())
             .then((json) => console.log(json))
             .catch(error => console.log(error))
     }
@@ -41,7 +41,7 @@ export default function Data() {
                 gz = gyroscopeData.z;
                 t_gyroscope.push([gx, gy, gz]);
                 // console.log(ax, ay, az);
-                console.log(t_gyroscope.length);
+                // console.log(t_gyroscope.length);
                 if (t_gyroscope.length === 128) {
                     // console.log("here");
                     // console.log(t_gyroscope);
