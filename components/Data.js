@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer, Gyroscope } from 'expo-sensors';
 var gx, gy, gz;
+var ax, ay, az;
 var t_gyroscope = [];
 var t_accelerometer = [];
 
@@ -20,7 +21,7 @@ export default function Data() {
             },
             body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer })
         })
-            .then(resp => resp.json())
+            .then(resp => resp.text())
             .then((json) => console.log(json))
             .catch(error => console.log(error))
     }
@@ -32,8 +33,11 @@ export default function Data() {
     const _subscribe = () => {
         setSubscription(
             Accelerometer.addListener(accelerometerData => {
+                ax = accelerometerData.x;
+                ay = accelerometerData.y;
+                az = accelerometerData.z;
                 setData(accelerometerData);
-                t_accelerometer.push([data.x, data.y, data.z]);
+                t_accelerometer.push([ax, ay, az]);
             }),
             Gyroscope.addListener(gyroscopeData => {
                 gx = gyroscopeData.x;
@@ -45,7 +49,7 @@ export default function Data() {
                 if (t_gyroscope.length === 128) {
                     // console.log("here");
                     // console.log(t_gyroscope);
-                    // console.log(t_accelerometer);
+                    console.log(t_accelerometer);
                     t_accelerometer = t_accelerometer.slice(64, 128);
                     t_gyroscope = t_gyroscope.slice(64, 128);
                     insertData();
@@ -71,7 +75,7 @@ export default function Data() {
         <View style={styles.container}>
             <Text style={styles.text}>Accelerometer: (in Gs where 1 G = 9.81 m s^-2)</Text>
             <Text style={styles.text}>
-                x: {round(x)} y: {round(y)} z: {round(z)}
+                x: {round(ax)} y: {round(ay)} z: {round(az)}
             </Text>
             <Text style={styles.text}>Gyroscope:</Text>
             <Text style={styles.text}>
