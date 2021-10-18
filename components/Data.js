@@ -49,7 +49,7 @@ export default function Data() {
                 if (t_gyroscope.length === 128) {
                     // console.log("here");
                     // console.log(t_gyroscope);
-                    console.log(t_accelerometer);
+                    // console.log(t_accelerometer);
                     t_accelerometer = t_accelerometer.slice(64, 128);
                     t_gyroscope = t_gyroscope.slice(64, 128);
                     insertData();
