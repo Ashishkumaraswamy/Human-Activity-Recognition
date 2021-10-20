@@ -38,6 +38,7 @@ export default function Data() {
                 az = accelerometerData.z;
                 setData(accelerometerData);
                 t_accelerometer.push([ax, ay, az]);
+                // console.log(ax)
             }),
             Gyroscope.addListener(gyroscopeData => {
                 gx = gyroscopeData.x;
@@ -50,9 +51,9 @@ export default function Data() {
                     // console.log("here");
                     // console.log(t_gyroscope);
                     // console.log(t_accelerometer);
-                    t_accelerometer = t_accelerometer.slice(64, 128);
-                    t_gyroscope = t_gyroscope.slice(64, 128);
                     insertData();
+                    t_accelerometer = [];
+                    t_gyroscope = [];
                 }
             })
         );
