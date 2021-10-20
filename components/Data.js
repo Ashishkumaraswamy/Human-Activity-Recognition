@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Accelerometer, Gyroscope,DeviceMotion } from 'expo-sensors';
+import { Accelerometer, Gyroscope } from 'expo-sensors';
 var gx, gy, gz;
 var ax, ay, az;
-var gax, gay, gaz;
 var t_gyroscope = [];
 var t_accelerometer = [];
-var tg_accelerometer = [];
 
 export default function Data() {
     const [data, setData] = useState({
@@ -21,7 +19,7 @@ export default function Data() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer , gaccelerometer: tg_accelerometer})
+            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer })
         })
             .then(resp => resp.text())
             .then((json) => console.log(json))
@@ -31,29 +29,17 @@ export default function Data() {
 
     Accelerometer.setUpdateInterval(20);
     Gyroscope.setUpdateInterval(20);
-    DeviceMotion.setUpdateInterval(20);
 
     const _subscribe = () => {
         setSubscription(
-            DeviceMotion.addListener(deviceMotiondata => {
-                ax = deviceMotiondata.acceleration.x;
-                ay = deviceMotiondata.acceleration.y;
-                az = deviceMotiondata.acceleration.z;
-                setData(deviceMotiondata.acceleration);
+            Accelerometer.addListener(accelerometerData => {
+                ax = accelerometerData.x;
+                ay = accelerometerData.y;
+                az = accelerometerData.z;
+                setData(accelerometerData);
                 t_accelerometer.push([ax, ay, az]);
-                gax = deviceMotiondata.accelerationIncludingGravity.x;
-                gay = deviceMotiondata.accelerationIncludingGravity.y;
-                gaz = deviceMotiondata.accelerationIncludingGravity.z;
-                tg_accelerometer.push([gax, gay, gaz]);
+                // console.log(ax)
             }),
-
-            // Accelerometer.addListener(accelerometerData => {
-            //     ax = accelerometerData.x;
-            //     ay = accelerometerData.y;
-            //     az = accelerometerData.z;
-            //     setData(accelerometerData);
-            //     t_accelerometer.push([ax, ay, az]);
-            // }),
             Gyroscope.addListener(gyroscopeData => {
                 gx = gyroscopeData.x;
                 gy = gyroscopeData.y;
@@ -66,9 +52,8 @@ export default function Data() {
                     // console.log(t_gyroscope);
                     // console.log(t_accelerometer);
                     insertData();
-                    t_accelerometer = t_accelerometer.slice(64, 128);
-                    tg_accelerometer = tg_accelerometer.slice(64, 128);
-                    t_gyroscope = t_gyroscope.slice(64, 128);
+                    t_accelerometer = [];
+                    t_gyroscope = [];
                 }
             })
         );
