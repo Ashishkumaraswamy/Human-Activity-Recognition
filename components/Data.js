@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Accelerometer, Gyroscope } from 'expo-sensors';
+import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors';
+import * as Speech from 'expo-speech'
+
 var gx, gy, gz;
 var ax, ay, az;
 var t_gyroscope = [];
@@ -19,16 +21,21 @@ export default function Data() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer })
+            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, magnetometer: t_magnetomter })
         })
-            .then(resp => resp.text())
-            .then((json) => console.log(json))
+            .then(resp => resp.json())
+            .then((json) => {
+                var js = JSON.parse(json);
+                console.log(js['output']);
+                Speech.speak(js['output']);
+            })
             .catch(error => console.log(error))
     }
     const [subscription, setSubscription] = useState(null);
 
     Accelerometer.setUpdateInterval(20);
     Gyroscope.setUpdateInterval(20);
+    Magnetometer.setUpdateInterval(20);
 
     const _subscribe = () => {
         setSubscription(
@@ -47,10 +54,10 @@ export default function Data() {
                 t_gyroscope.push([gx, gy, gz]);
                 // console.log(ax, ay, az);
                 // console.log(t_gyroscope.length);
-                if (t_gyroscope.length === 128) {
+                if (t_gyroscope.length === 100) {
                     // console.log("here");
                     // console.log(t_gyroscope);
-                    // console.log(t_accelerometer);
+                    console.log(t_accelerometer);
                     insertData();
                     t_accelerometer = [];
                     t_gyroscope = [];
