@@ -5,6 +5,7 @@ import * as Speech from 'expo-speech'
 
 var gx, gy, gz;
 var ax, ay, az;
+var gax,gay,gaz;
 var t_gyroscope = [];
 var t_accelerometer = [];
 var t_accelerometergravity = []
@@ -42,16 +43,16 @@ export default function Data() {
         setSubscription(
 
             DeviceMotion.addListener(deviceMotiondata => {
-                ax = deviceMotiondata.x;
-                ay = deviceMotiondata.y;
-                az = deviceMotiondata.z;
-                setData(deviceMotiondata);
+                ax = deviceMotiondata.acceleration.x;
+                ay = deviceMotiondata.acceleration.y;
+                az = deviceMotiondata.acceleration.z;
+                setData(deviceMotiondata.acceleration);
                 t_accelerometer.push([ax, ay, az]);
                 // console.log(ax)
-                // gax = deviceMotiondata.accelerationIncludingGravity.x;
-                // gay = deviceMotiondata.accelerationIncludingGravity.y;
-                // gaz = deviceMotiondata.accelerationIncludingGravity.z;
-                // t_accelerometergravity.push([gax, gay, gaz]);
+                gax = deviceMotiondata.accelerationIncludingGravity.x;
+                gay = deviceMotiondata.accelerationIncludingGravity.y;
+                gaz = deviceMotiondata.accelerationIncludingGravity.z;
+                t_accelerometergravity.push([gax, gay, gaz]);
             }),
             // Accelerometer.addListener(accelerometerData => {
             //     ax = accelerometerData.x;
@@ -73,7 +74,7 @@ export default function Data() {
                     // console.log(t_gyroscope);
                     // console.log(t_accelerometergravity);
                     insertData();
-                    t_accelerometer = []
+                    t_accelerometer = [];
                     t_accelerometergravity = [];
                     t_gyroscope = [];
                 }
