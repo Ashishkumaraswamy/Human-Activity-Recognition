@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors';
+import { Accelerometer, Gyroscope, DeviceMotion  } from 'expo-sensors';
 import * as Speech from 'expo-speech'
 
 var gx, gy, gz;
@@ -16,37 +16,46 @@ export default function Data() {
     });
     const insertData = () => {
         // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        fetch('https://human-activity-recognitionml.herokuapp.com/send', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, magnetometer: t_magnetomter })
-        })
-            .then(resp => resp.json())
-            .then((json) => {
-                var js = JSON.parse(json);
-                console.log(js['output']);
-                Speech.speak(js['output']);
-            })
-            .catch(error => console.log(error))
+        //console.log(JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer}));
+        // fetch('https://human-activity-recognitionml.herokuapp.com/send', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer})
+        // })
+        //     .then(resp => resp.json())
+        //     .then((json) => {
+        //         var js = JSON.parse(json);
+        //         console.log(js['output']);
+        //         Speech.speak(js['output']);
+        //     })
+        //     .catch(error => console.log(error))
     }
     const [subscription, setSubscription] = useState(null);
 
     Accelerometer.setUpdateInterval(20);
     Gyroscope.setUpdateInterval(20);
-    Magnetometer.setUpdateInterval(20);
+    DeviceMotion.setUpdateInterval(20);
 
+    // Magnetometer.setUpdateInterval(20);
     const _subscribe = () => {
         setSubscription(
-            Accelerometer.addListener(accelerometerData => {
-                ax = accelerometerData.x;
-                ay = accelerometerData.y;
-                az = accelerometerData.z;
-                setData(accelerometerData);
+            DeviceMotion.addListener(deviceMotiondata => {
+                ax = deviceMotiondata.acceleration.x;
+                ay = deviceMotiondata.acceleration.y;
+                az = deviceMotiondata.acceleration.z;
+                setData(deviceMotiondata.acceleration);
                 t_accelerometer.push([ax, ay, az]);
-                // console.log(ax)
             }),
+            // Accelerometer.addListener(accelerometerData => {
+            //     ax = accelerometerData.x;
+            //     ay = accelerometerData.y;
+            //     az = accelerometerData.z;
+            //     setData(accelerometerData);
+            //     t_accelerometer.push([ax, ay, az]);
+            //     // console.log(ax)
+            // }),
             Gyroscope.addListener(gyroscopeData => {
                 gx = gyroscopeData.x;
                 gy = gyroscopeData.y;
@@ -62,7 +71,8 @@ export default function Data() {
                     t_accelerometer = [];
                     t_gyroscope = [];
                 }
-            })
+            }),
+            
         );
     };
 
