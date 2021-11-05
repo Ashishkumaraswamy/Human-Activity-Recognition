@@ -5,7 +5,7 @@ import * as Speech from 'expo-speech'
 
 var gx, gy, gz;
 var ax, ay, az;
-var gax,gay,gaz;
+var gax, gay, gaz;
 var t_gyroscope = [];
 var t_accelerometer = [];
 var t_accelerometergravity = []
@@ -69,10 +69,13 @@ export default function Data() {
                 t_gyroscope.push([gx, gy, gz]);
                 // console.log(ax, ay, az);
                 // console.log(t_gyroscope.length);
-                if (t_gyroscope.length === 100) {
+                if (t_gyroscope.length >= 100 && t_accelerometergravity.length >= 100 && t_accelerometer.length >= 100) {
                     // console.log("here");
                     // console.log(t_gyroscope);
                     // console.log(t_accelerometergravity);
+                    t_accelerometer = t_accelerometer.slice(0, 100);
+                    t_accelerometergravity = t_accelerometergravity.slice(0, 100);
+                    t_gyroscope = t_gyroscope.slice(0, 100);
                     insertData();
                     t_accelerometer = [];
                     t_accelerometergravity = [];
