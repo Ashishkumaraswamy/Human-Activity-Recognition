@@ -17,7 +17,7 @@ export default function Data() {
         z: 0,
     });
     const insertData = () => {
-        console.log(JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, accelerometer_gravity: t_accelerometergravity }));
+        // console.log(JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, accelerometer_gravity: t_accelerometergravity }));
         fetch('https://human-activity-recognitionml.herokuapp.com/send', {
             method: 'POST',
             headers: {
@@ -26,7 +26,12 @@ export default function Data() {
             body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, accelerometer_gravity: t_accelerometergravity })
         })
             .then(resp => resp.text())
-            .then(response => console.log(response))
+            .then(response => {
+                var js = JSON.parse(response);
+                console.log(js['output']);
+                Speech.speak(js['output']);
+            }
+            )
             // .then((json) => {
             //     var js = JSON.parse(json);
             //     console.log(js['output']);
