@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors';
+import { Accelerometer, Gyroscope, DeviceMotioni, DeviceMotion } from 'expo-sensors';
 import * as Speech from 'expo-speech'
 
 var gx, gy, gz;
 var ax, ay, az;
 var t_gyroscope = [];
-var t_accelerometer = [];
+var t_accelerometergravity = [];
 
 export default function Data() {
     const [data, setData] = useState({
@@ -16,12 +16,12 @@ export default function Data() {
     });
     const insertData = () => {
         // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-        fetch('https://human-activity-recognitionml.herokuapp.com/send', {
+        fetch('http://192.168.0.105:4000/send', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, magnetometer: t_magnetomter })
+            body: JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer })
         })
             .then(resp => resp.json())
             .then((json) => {
@@ -39,14 +39,23 @@ export default function Data() {
 
     const _subscribe = () => {
         setSubscription(
-            Accelerometer.addListener(accelerometerData => {
+
+            DeviceMotion.addListener(accelerometerData => {
                 ax = accelerometerData.x;
                 ay = accelerometerData.y;
                 az = accelerometerData.z;
                 setData(accelerometerData);
-                t_accelerometer.push([ax, ay, az]);
+                t_accelerometergravity.push([ax, ay, az]);
                 // console.log(ax)
             }),
+            // Accelerometer.addListener(accelerometerData => {
+            //     ax = accelerometerData.x;
+            //     ay = accelerometerData.y;
+            //     az = accelerometerData.z;
+            //     setData(accelerometerData);
+            //     t_accelerometer.push([ax, ay, az]);
+            //     // console.log(ax)
+            // }),
             Gyroscope.addListener(gyroscopeData => {
                 gx = gyroscopeData.x;
                 gy = gyroscopeData.y;
@@ -56,10 +65,10 @@ export default function Data() {
                 // console.log(t_gyroscope.length);
                 if (t_gyroscope.length === 100) {
                     // console.log("here");
-                    // console.log(t_gyroscope);
-                    console.log(t_accelerometer);
+                    console.log(t_gyroscope);
+                    // console.log(t_accelerometer);
                     insertData();
-                    t_accelerometer = [];
+                    t_accelerometergravity = [];
                     t_gyroscope = [];
                 }
             })
