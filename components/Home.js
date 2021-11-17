@@ -1,13 +1,12 @@
-import React ,{useState} from 'react'
-import { View, Text, Button, Linking,StyleSheet, Pressable ,TouchableOpacity} from 'react-native'
+import React from 'react'
+import { View, Text, Button, StyleSheet } from 'react-native'
 import { FontAwesome5 } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import Data from './Data';
 
-
-function Home() {
+function Home({ navigation }) {
     return (
         <View>
+            <View style={style.container}>
                 <Text style={style.today}>Today</Text>
                 <View style={style.firstRow}>
                     <View style={style.activitycontainer}>
@@ -44,6 +43,17 @@ function Home() {
                     </View>
                 </View>
             </View>
+            <View style={style.bottomcontainer}>
+                <View style={style.navigator}>
+                    <Text style={{ left: 5, fontSize: 16 }} onPress={() =>
+                        navigation.navigate('Predictions')
+                    }>Predictions</Text>
+                    <Text style={{ left: -20, fontSize: 16 }}>Details</Text>
+                    <Text style={{ left: -20, fontSize: 16 }} onPress={() =>
+                        navigation.navigate('Data')} > Data</Text>
+                </View>
+            </View>
+        </View >
     )
 }
 

@@ -9,8 +9,9 @@ var gax, gay, gaz;
 var t_gyroscope = [];
 var t_accelerometer = [];
 var t_accelerometergravity = []
+var biking, standing, sitting, downstairs, upstairs, walking, jogging;
 
-export default function Data() {
+export default function Prediction() {
     const [data, setData] = useState({
         x: 0,
         y: 0,
@@ -18,7 +19,7 @@ export default function Data() {
     });
     const insertData = () => {
         // console.log(JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, accelerometer_gravity: t_accelerometergravity }));
-        fetch('https://human-activity-recognitionml.herokuapp.com/send', {
+        fetch('https://human-activity-recognitionml.herokuapp.com/sendprob', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -29,7 +30,13 @@ export default function Data() {
             .then(response => {
                 var js = JSON.parse(response);
                 console.log(js['output']);
-                Speech.speak(js['output']);
+                biking = js['output'][0][0];
+                downstairs = js['output'][0][1];
+                jogging = js['output'][0][2];
+                sitting = js['output'][0][3];
+                standing = js['output'][0][4];
+                upstairs = js['output'][0][5];
+                walking = js['output'][0][6];
             }
             )
             // .then((json) => {
@@ -94,26 +101,17 @@ export default function Data() {
     }, []);
 
     const { x, y, z } = data;
-    // console.log(ax, ay, az);
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Accelerometer: (in Gs where 1 G = 9.81 m s^-2)</Text>
-            <Text style={styles.text}>
-                x: {round(ax)} y: {round(ay)} z: {round(az)}
-            </Text>
-            <Text style={styles.text}>Gyroscope:</Text>
-            <Text style={styles.text}>
-                x: {round(gx)} y: {round(gy)} z: {round(gz)}
-            </Text>
+            <Text style={styles.text}>Biking : {biking}</Text>
+            <Text style={styles.text}>Downstairs : {downstairs}</Text>
+            <Text style={styles.text}>Jogging : {jogging}</Text>
+            <Text style={styles.text}>Sitting : {sitting}</Text>
+            <Text style={styles.text}>Standing : {standing}</Text>
+            <Text style={styles.text}>Upstairs : {upstairs}</Text>
+            <Text style={styles.text}>Walking : {walking}</Text>
         </View>
-    );
-}
-
-function round(n) {
-    if (!n) {
-        return 0;
-    }
-    return Math.floor(n * 100) / 100;
+    )
 }
 
 const styles = StyleSheet.create({
@@ -124,7 +122,6 @@ const styles = StyleSheet.create({
     },
     text: {
         textAlign: 'center',
+        marginTop: 10,
     },
 });
-
-
