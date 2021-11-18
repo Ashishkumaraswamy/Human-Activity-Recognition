@@ -105,6 +105,8 @@ export default function Data() {
             <Text style={styles.text}>
                 x: {round(gx)} y: {round(gy)} z: {round(gz)}
             </Text>
+
+             
         </View>
     );
 }

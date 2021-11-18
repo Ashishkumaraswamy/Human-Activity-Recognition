@@ -30,13 +30,13 @@ export default function Prediction() {
             .then(response => {
                 var js = JSON.parse(response);
                 console.log(js['output']);
-                biking = js['output'][0][0];
-                downstairs = js['output'][0][1];
-                jogging = js['output'][0][2];
-                sitting = js['output'][0][3];
-                standing = js['output'][0][4];
-                upstairs = js['output'][0][5];
-                walking = js['output'][0][6];
+                biking = js['output'][0];
+                downstairs = js['output'][1];
+                jogging = js['output'][2];
+                sitting = js['output'][3];
+                standing = js['output'][4];
+                upstairs = js['output'][5];
+                walking = js['output'][6];
             }
             )
             // .then((json) => {
@@ -103,24 +103,27 @@ export default function Prediction() {
     const { x, y, z } = data;
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Biking : {biking}</Text>
+            <Text style={styles.text}>Biking     : {biking}</Text>
             <Text style={styles.text}>Downstairs : {downstairs}</Text>
-            <Text style={styles.text}>Jogging : {jogging}</Text>
-            <Text style={styles.text}>Sitting : {sitting}</Text>
-            <Text style={styles.text}>Standing : {standing}</Text>
-            <Text style={styles.text}>Upstairs : {upstairs}</Text>
-            <Text style={styles.text}>Walking : {walking}</Text>
+            <Text style={styles.text}>Jogging    : {jogging}</Text>
+            <Text style={styles.text}>Sitting    : {sitting}</Text>
+            <Text style={styles.text}>Standing   : {standing}</Text>
+            <Text style={styles.text}>Upstairs   : {upstairs}</Text>
+            <Text style={styles.text}>Walking    : {walking}</Text>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor:'#FFBE6A',
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
     },
     text: {
+        // marginLeft: "30",
+        fontWeight: 'bold',
         textAlign: 'center',
         marginTop: 10,
     },
