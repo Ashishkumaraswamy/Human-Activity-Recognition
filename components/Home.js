@@ -59,7 +59,6 @@ function Home({ navigation }) {
 
 const style = StyleSheet.create({
     container: {
-        top: 30,
         position: 'relative',
         width: '100%',
         height: '60%',

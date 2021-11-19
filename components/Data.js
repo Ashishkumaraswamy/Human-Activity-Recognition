@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer, Gyroscope, DeviceMotion } from 'expo-sensors';
 import * as Speech from 'expo-speech'
+import { Table, Row, Rows } from 'react-native-table-component';
 
 var gx, gy, gz;
 var ax, ay, az;
@@ -9,7 +10,7 @@ var gax, gay, gaz;
 var t_gyroscope = [];
 var t_accelerometer = [];
 var t_accelerometergravity = []
-
+var output = '';
 export default function Data() {
     const [data, setData] = useState({
         x: 0,
@@ -17,7 +18,6 @@ export default function Data() {
         z: 0,
     });
     const insertData = () => {
-        // console.log(JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, accelerometer_gravity: t_accelerometergravity }));
         fetch('https://human-activity-recognitionml.herokuapp.com/send', {
             method: 'POST',
             headers: {
@@ -30,13 +30,9 @@ export default function Data() {
                 var js = JSON.parse(response);
                 console.log(js['output']);
                 Speech.speak(js['output']);
+                output = js['output'];
             }
             )
-            // .then((json) => {
-            //     var js = JSON.parse(json);
-            //     console.log(js['output']);
-            //     Speech.speak(js['output']);
-            // })
             .catch(error => console.log(error))
     }
     const [subscription, setSubscription] = useState(null);
@@ -53,7 +49,6 @@ export default function Data() {
                 az = deviceMotiondata.acceleration.z;
                 setData(deviceMotiondata.acceleration);
                 t_accelerometer.push([ax, ay, az]);
-                // console.log(ax)
                 gax = deviceMotiondata.accelerationIncludingGravity.x;
                 gay = deviceMotiondata.accelerationIncludingGravity.y;
                 gaz = deviceMotiondata.accelerationIncludingGravity.z;
@@ -64,12 +59,7 @@ export default function Data() {
                 gy = gyroscopeData.y;
                 gz = gyroscopeData.z;
                 t_gyroscope.push([gx, gy, gz]);
-                // console.log(ax, ay, az);
-                // console.log(t_gyroscope.length);
                 if (t_gyroscope.length >= 100 && t_accelerometergravity.length >= 100 && t_accelerometer.length >= 100) {
-                    // console.log("here");
-                    // console.log(t_gyroscope);
-                    // console.log(t_accelerometergravity);
                     t_accelerometer = t_accelerometer.slice(0, 100);
                     t_accelerometergravity = t_accelerometergravity.slice(0, 100);
                     t_gyroscope = t_gyroscope.slice(0, 100);
@@ -81,6 +71,17 @@ export default function Data() {
             })
         );
     };
+    gx = round(gx);
+    gy = round(gy);
+    gz = round(gz);
+    ax = round(ax);
+    ay = round(ay);
+    az = round(az);
+    var tableHead = ['Sensors', 'X', 'Y', 'Z'];
+    var tableData = [
+        ['Accelerometer', ax, ay, az],
+        ['Gyroscope', gx, gy, gz],
+    ]
 
     const _unsubscribe = () => {
         subscription && subscription.remove();
@@ -88,25 +89,17 @@ export default function Data() {
     };
 
     useEffect(() => {
-
         _subscribe();
         return () => _unsubscribe();
     }, []);
 
-    const { x, y, z } = data;
-    // console.log(ax, ay, az);
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Accelerometer: (in Gs where 1 G = 9.81 m s^-2)</Text>
-            <Text style={styles.text}>
-                x: {round(ax)} y: {round(ay)} z: {round(az)}
-            </Text>
-            <Text style={styles.text}>Gyroscope:</Text>
-            <Text style={styles.text}>
-                x: {round(gx)} y: {round(gy)} z: {round(gz)}
-            </Text>
-
-             
+            <Table borderStyle={{ borderWidth: 2, borderColor: 'black' }}>
+                <Row data={tableHead} style={styles.head} textStyle={styles.text} />
+                <Rows data={tableData} textStyle={styles.text} />
+            </Table>
+            <Text style={styles.prediction}>Prediction: {output}</Text>
         </View>
     );
 }
@@ -123,10 +116,25 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,
+        backgroundColor: '#FFBE6A',
     },
-    text: {
+    head:
+    {
+        height: 40,
+    },
+    text:
+    {
+        margin: 6,
+        justifyContent: 'center',
         textAlign: 'center',
     },
+    prediction:
+    {
+        marginTop: 50,
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: 24,
+    }
 });
 
 

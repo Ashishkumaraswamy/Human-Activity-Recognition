@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Accelerometer, Gyroscope, DeviceMotion } from 'expo-sensors';
-import * as Speech from 'expo-speech'
+import { Table, Row, Rows } from 'react-native-table-component';
 
 var gx, gy, gz;
 var ax, ay, az;
@@ -9,7 +9,7 @@ var gax, gay, gaz;
 var t_gyroscope = [];
 var t_accelerometer = [];
 var t_accelerometergravity = []
-var biking, standing, sitting, downstairs, upstairs, walking, jogging;
+var biking = 0, standing = 0, sitting = 0, downstairs = 0, upstairs = 0, walking = 0, jogging = 0;
 
 export default function Prediction() {
     const [data, setData] = useState({
@@ -18,7 +18,6 @@ export default function Prediction() {
         z: 0,
     });
     const insertData = () => {
-        // console.log(JSON.stringify({ gyroscope: t_gyroscope, accelerometer: t_accelerometer, accelerometer_gravity: t_accelerometergravity }));
         fetch('https://human-activity-recognitionml.herokuapp.com/sendprob', {
             method: 'POST',
             headers: {
@@ -29,7 +28,6 @@ export default function Prediction() {
             .then(resp => resp.text())
             .then(response => {
                 var js = JSON.parse(response);
-                console.log(js['output']);
                 biking = js['output'][0];
                 downstairs = js['output'][1];
                 jogging = js['output'][2];
@@ -37,6 +35,7 @@ export default function Prediction() {
                 standing = js['output'][4];
                 upstairs = js['output'][5];
                 walking = js['output'][6];
+                console.log("biking:" + biking + "\ndownstairs:" + downstairs + "\njogging:" + jogging + "\nsitting:" + sitting + "\nStanding:" + standing + "\nUpstairs:" + upstairs + "\nwalking:" + walking + "\n\n")
             }
             )
             // .then((json) => {
@@ -100,23 +99,31 @@ export default function Prediction() {
         return () => _unsubscribe();
     }, []);
 
+    var tableHead = ['Activity', 'Probability'];
+    var tableData = [
+        ['Biking', biking],
+        ['Downstairs', downstairs],
+        ['Jogging', jogging],
+        ['Sitting', sitting],
+        ['Standing', standing],
+        ['Upstairs', upstairs],
+        ['Walking', walking],
+    ]
+
     const { x, y, z } = data;
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>Biking     : {biking}</Text>
-            <Text style={styles.text}>Downstairs : {downstairs}</Text>
-            <Text style={styles.text}>Jogging    : {jogging}</Text>
-            <Text style={styles.text}>Sitting    : {sitting}</Text>
-            <Text style={styles.text}>Standing   : {standing}</Text>
-            <Text style={styles.text}>Upstairs   : {upstairs}</Text>
-            <Text style={styles.text}>Walking    : {walking}</Text>
+            <Table borderStyle={{ borderWidth: 2, borderColor: 'black' }}>
+                <Row data={tableHead} style={styles.head} textStyle={styles.text} />
+                <Rows data={tableData} textStyle={styles.text} />
+            </Table>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor:'#FFBE6A',
+        backgroundColor: '#FFBE6A',
         flex: 1,
         justifyContent: 'center',
         paddingHorizontal: 10,

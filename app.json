@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "HAR",
+    "name": "HAR app",
     "slug": "HAR",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/appicon.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -20,8 +20,9 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "tothepointcode.todu",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/appicon.png",
         "backgroundColor": "#FFFFFF"
       }
     },
